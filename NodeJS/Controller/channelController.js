@@ -2,6 +2,7 @@ import videoModel from "../Model/videoModel.js";
 // import commentModel from "../Model/commentModel.js";
 import userModel from "../Model/userModel.js";
 import channelModel from "../Model/channelModel.js";
+import mongoose from "mongoose";
 
 // Fetch all channels
 export async function getChannels(req, res){
@@ -13,10 +14,33 @@ export async function getChannels(req, res){
     }
 };
 
-// Fetch a single channel by ID
-export async function getChannelById(req, res){
+//Fetch channel by user Id
+export const getChannelByUserId = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        console.log("Received userId:", userId);
+
+        if (!mongoose.Types.ObjectId.isValid(userId)) {
+            return res.status(400).json({ message: "Invalid user ID format" });
+        }
+
+        const channel = await channelModel.findOne({ owner: userId });
+
+        if (!channel) {
+            return res.status(404).json({ message: "No channel found for this user." });
+        }
+
+        res.json(channel);
+    } catch (error) {
+        console.error("Error fetching channel by userId:", error);
+        res.status(500).json({ message: "Internal server error." });
+    }
+};
+
+// Fetch a single channel by channelHandle
+export async function getChannelByChannelHandle(req, res){
     try{
-        const channel= await channelModel.findById(req.params.id).populate('owner', 'username avatar');
+        const channel= await channelModel.findOne({handle: req.params.handle});
         if(!channel){
             return res.status(404).json({message: 'Channel not found'});
         }
@@ -29,14 +53,39 @@ export async function getChannelById(req, res){
 // Create a new channel (User must be signed in)
 export async function createChannel(req, res) {
     try{
-        const {channelName, description, owner, channelBanner}= req.body;
+        const {channelName, handle, description, owner, channelBannerUrl}= req.body;
+        //Get the avatar file path if uplaoded
+        const avatar= req.file? `/uploads/${req.file.filename}`:"";
+        //Check if the channel handle is unique
+        const existingChannel= await channelModel.findOne({handle});
+        if(existingChannel){
+            return res.status(400).json({error: "Channel handle already exists!"});
+        }
+
+        //Ensure owner exists
+        const user= await userModel.findById(owner);
+        if(!user){
+            return res.status(404).json({error: "User not found"});
+        }
+
+        
+        //Create a new channel
         const newChannel= new channelModel({
-            channelName, description, owner, channelBanner
+            channelName, 
+            handle,
+            description, 
+            owner, 
+            channelBannerUrl,
+            avatar
         });
         await newChannel.save();
+
+
+        //Add channel reference to the user
         await userModel.findByIdAndUpdate(owner, {$push: {channels: newChannel._id}})
-        res.status(201).json({message: "Channel created", channel: newChannel});
+        return res.status(201).json({success: true, message: "Channel created successfully", channel: newChannel});
     }catch(error){
+        console.error("Server error:", error);
         res.status(500).json({error: "Server error: Failed to create channel"});
     }
 }

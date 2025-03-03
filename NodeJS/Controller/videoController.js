@@ -12,15 +12,36 @@ export async function getVideos(req, res){
 };
 
 // Fetch a single video by ID
-export async function getVideoById(req, res){
+export async function getVideoById(req,res){
     try{
-        const video= await videoModel.findById(req.params.id).populate('comments');
+        const video= await videoModel.findById(req.params.id).populate('channelId');
         if(!video){
-            return res.status(404).json({message: 'Video not found'});
+            return res.status(404).json({error: "Video not found"});
+
         }
-        res.status(200).json(video);
+        res.json(video);
+
     }catch(error){
-        res.status(500).json({message: 'Server Error : Unable to fetch video'});
+        res.status(500).json({message: "Sever error: Unable to fetch video by Id"});
+    }
+
+}
+export async function getVideoByChannelHandle(req, res){
+    try{
+        const {handle}= req.params;
+
+        //Find the channel by handle
+        const channel= await channelModel.findOne({handle});
+        if(!channel){
+            return res.status(404).json({message: "Channel not found"});
+        }
+
+        //Fetch all videos uploaded by this channel
+        const videos= (await videoModel.find({channelId: channel._id}));
+        res.status(200).json(videos);
+    }catch(error){
+        console.error("Error fetching channel videos:", error);
+        res.status(500).json({message: 'Server Error : Unable to fetch videos'});
     }
 }
 
@@ -93,6 +114,7 @@ export async function uploadVideo(req, res) {
         await channelModel.findByIdAndUpdate(channelId, {$push: {videos: newVideo._id}})
         res.status(201).json({message: "Video uploaded", video: newVideo});
     }catch(error){
+        console.error("Uplaod error:", error);
         res.status(500).json({error: "Server error: Failed to upload video"});
     }
 }

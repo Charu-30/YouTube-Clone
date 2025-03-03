@@ -15,10 +15,12 @@ import {PiUserCircle} from "react-icons/pi";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import { useNavigate } from "react-router-dom";
+
 import '../index.css';
 
 const menuItems = [
-  { name: "Home", icon: <HomeIcon /> },
+  { name: "Home", icon: <HomeIcon />, path:"/" },
   { name: "Shorts", icon: <WhatshotIcon /> },
   { name: "Subscriptions", icon: <SubscriptionsIcon /> },
   { name: "You", icon: <AccountCircleIcon/>}
@@ -42,6 +44,7 @@ const yourItems = [
 ];
 
 function Sidebar({ isOpen }) {
+  const navigate= useNavigate(); //Hook for navigation
   return (
     <aside
       className={`fixed top-14 left-0 min-h-screen bg-white transition-all duration-300 ${
@@ -51,7 +54,11 @@ function Sidebar({ isOpen }) {
       <nav className="flex flex-col gap-2 p-1">
         {/* Main Menu */}
         {menuItems.map((item, index) => (
-          <div key={index} className="flex items-center gap-4 p-2 hover:bg-gray-200 rounded cursor-pointer">
+          <div 
+            key={index} 
+            className="flex items-center gap-4 pt-4 px-2 hover:bg-gray-200 rounded cursor-pointer"
+            onClick={()=>navigate(item.path)}
+          >
             {!isOpen ? (
                 <div className="flex flex-col justify-center">
                     <span className="">{item.icon}</span>

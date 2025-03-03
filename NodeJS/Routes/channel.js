@@ -1,10 +1,12 @@
 import express from "express";
-import { getChannels, getChannelById, createChannel, updateChannel, deleteChannel } from "../Controller/channelController.js";
+import { getChannels, getChannelByChannelHandle, createChannel, updateChannel, deleteChannel, getChannelByUserId } from "../Controller/channelController.js";
+import upload from "../Middleware/upload.js";
 const router= express.Router();
 
 router.get('/', getChannels);
-router.get('/:id', getChannelById);
-router.post('/', createChannel);
+router.get('/user/:userId', getChannelByUserId);
+router.get('/handle/:handle', getChannelByChannelHandle);
+router.post('/',upload.single('avatar'), createChannel);
 router.put('/:id', updateChannel);
 router.delete('/:id', deleteChannel);
 

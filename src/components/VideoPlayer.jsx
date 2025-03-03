@@ -123,7 +123,7 @@ const VideoPlayer = () => {
   };
 
   return (
-    <div className="min-w-screen-lg mx-auto p-4 flex flex-col lg:flex-row gap-6 pt-20 pl-32">
+    <div className="min-w-screen-lg mx-auto p-4 flex flex-col lg:flex-row gap-6 pt-20">
       {/* Left: Video Player & Details */}
       <div className="flex-1">
         {/* Video Player */}
@@ -141,7 +141,7 @@ const VideoPlayer = () => {
         <div className="flex justify-between items-center mt-2">
           <div>
             <p className="text-gray-600">{video.views} views • {new Date(video.uploadDate).toDateString()}</p>
-            <p className="text-sm text-gray-500 font-semibold">Channel: {video.uploader}</p>
+            <p className="text-sm text-gray-500 font-semibold">Channel:{video.uploader||video.channelId?.channelName}</p>
           </div>
 
           {/* Action Buttons */}

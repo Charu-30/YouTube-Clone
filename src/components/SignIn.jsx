@@ -11,9 +11,12 @@ function SignIn(){
 
     // Check if user is already logged in
     useEffect(() => {
-      const storedUser = localStorage.getItem("username");
+      
+      const storedUser = localStorage.getItem("user");
+      console.log("Stored User:",storedUser);
       if (storedUser) {
-          setUser(storedUser);
+        const parsedUser= JSON.stringify(storedUser);
+          setUser(parsedUser.username);
       }
   }, []);
 
@@ -31,7 +34,9 @@ function SignIn(){
         e.preventDefault();
         setLoading(true);
 
-        const url= isLogin ? "http://localhost:5000/api/auth/login": "http://localhost:5000/api/auth/register";
+        const url= isLogin 
+            ? "http://localhost:5000/api/auth/login"
+            : "http://localhost:5000/api/auth/register";
 
        try {
             let requestData;
@@ -61,9 +66,10 @@ function SignIn(){
           
             if (isLogin) {
                 localStorage.setItem("token", data.token);
-                localStorage.setItem("username", data.user.username);
-                if(data.user.avatar) localStorage.setItem("avatar", data.user.avatar);
-                setUser(data.username);
+                // localStorage.setItem("username", data.user.username);
+                // if(data.user.avatar) localStorage.setItem("avatar", data.user.avatar);
+                localStorage.setItem("user", JSON.stringify(data.user)); //Stoe user object
+                setUser(data.user.username);
                 navigate("/");
             } else {
                 alert("Registration successful! Please login.");

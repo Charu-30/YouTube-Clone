@@ -37,7 +37,7 @@ const appRouter= createBrowserRouter([
                   </Suspense>
       },
       {
-        path: "/channel/:channelId",
+        path: "/channel/:handle",
         element:  <Suspense fallback={<div>Loading...</div>}>
                     <ChannelPage/>
                   </Suspense>
