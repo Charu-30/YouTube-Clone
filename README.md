@@ -26,13 +26,13 @@ A full-stack YouTube clone built using the MERN stack (MongoDB, Express.js, Reac
 
 **Backend (Node.js, Express, MongoDB)**
 
-**User Authentication**: Signup, Login, and Token-based Authentication using JWT.
+* **User Authentication**: Signup, Login, and Token-based Authentication using JWT.
 
-**Video Management**: API to Upload, fetch, edit, and delete videos.
+* **Video Management**: API to Upload, fetch, edit, and delete videos.
 
-**Channel Management**: API to create, fetch, update, and delete channels.
+* **Channel Management**: API to create, fetch, update, and delete channels.
 
-**Comment Management**: API to add, edit, and delete comments on videos.
+* **Comment Management**: API to add, edit, and delete comments on videos.
 
 # Technologies Used
 
