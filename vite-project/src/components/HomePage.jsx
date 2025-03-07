@@ -13,7 +13,7 @@ function HomePage() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/videos");
+        const response = await axios.get("https://youtube-clone-1-oo9t.onrender.com/api/videos");
         // console.log("Fetched Videos", response.data);
         setVideos(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
@@ -84,7 +84,7 @@ function HomePage() {
                 <img
                   src={
                     video.channelId?.avatar
-                      ? `http://localhost:5000${video.channelId.avatar}`
+                      ? `https://youtube-clone-1-oo9t.onrender.com${video.channelId.avatar}`
                       : defaultchannel
                   }
                   alt="Channel Avatar"

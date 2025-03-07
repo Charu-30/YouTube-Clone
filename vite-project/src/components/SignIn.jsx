@@ -43,8 +43,8 @@ function SignIn() {
     setLoading(true);
 
     const url = isLogin
-      ? "http://localhost:5000/api/auth/login"
-      : "http://localhost:5000/api/auth/register";
+      ? "https://youtube-clone-1-oo9t.onrender.com/api/auth/login"
+      : "https://youtube-clone-1-oo9t.onrender.com/api/auth/register";
 
     try {
       let requestData;

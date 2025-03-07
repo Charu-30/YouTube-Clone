@@ -46,7 +46,7 @@ function Header({ handleSearch, isSidebarOpen, setIsSidebarOpen }) {
     }
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/channels/user/${userId}`
+        `https://youtube-clone-1-oo9t.onrender.com/api/channels/user/${userId}`
       );
       if (response.data && response.data.handle) {
         setChannelHandle(response.data.handle);

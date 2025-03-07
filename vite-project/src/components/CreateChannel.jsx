@@ -30,7 +30,7 @@ function CreateChannel({ onClose, onCreate, userId }) {
     try {
       // Send post request to create a channel
       const response = await axios.post(
-        "http://localhost:5000/api/channels",
+        "https://youtube-clone-1-oo9t.onrender.com/api/channels",
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },
