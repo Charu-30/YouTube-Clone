@@ -4,7 +4,7 @@ import authenticateUser from "../Middleware/authenticateUser.js";
 const router= express.Router();
 
 router.get('/:videoId', getComments);
-router.post('/:id', addComment);
+router.post('/:id',authenticateUser, addComment);
 router.put('/:id', editComment);
 router.delete('/:id', deleteComment);
 

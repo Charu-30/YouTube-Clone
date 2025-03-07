@@ -26,7 +26,7 @@ function VideoPlayer() {
 
   //Retrieve user info from locaStorage
   const user = JSON.parse(localStorage.getItem("user") || "null");
-  const { username, avatar, id } = user;
+  const { avatar, id } = user;
 
   useEffect(() => {
     const fetchVideo = async () => {
@@ -80,7 +80,7 @@ function VideoPlayer() {
     fetchComments();
   }, [videoId]);
 
-  if (loading) return <p className="text center mt-10">Loading...</p>;
+  if (loading) return (<p className="text center mt-10">Loading...</p>);
   if (!video)
     return (
       <p className="text-center mt-10 text-xl font-semibold">Video not found</p>
