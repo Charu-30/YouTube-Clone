@@ -56,7 +56,6 @@ export async function createChannel(req, res) {
     const { channelName, handle, description, owner, channelBannerUrl } =
       req.body;
     // //Get the avatar file path if uplaoded
-    // const avatar = req.file ? `/uploads/${req.file.filename}` : "";
     //Check if the channel handle is unique
     const existingChannel = await channelModel.findOne({ handle });
     if (existingChannel) {

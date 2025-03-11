@@ -34,12 +34,7 @@ function CreateChannel({ onClose, onCreate, userId }) {
       }
     } catch (error) {
       console.error("Error creating channel:", error.response?.data || error);
-      alert(
-        error.response?.data?.message ||
-          "Failed to create channel. Please try again."
-      );
-    } finally {
-      setLoading(false);
+      alert(error.response?.data?.message || "Failed to create channel. Please try again.");
     }
   };
 
