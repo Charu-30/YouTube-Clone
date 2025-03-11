@@ -14,7 +14,7 @@ function HomePage() {
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/videos");
+        const response = await axios.get("https://youtube-clone-lmy3.onrender.com/api/videos");
         const allVideos = Array.isArray(response.data) ? response.data : [];
         setVideos(allVideos); // ✅ Store fetched videos
         setFilteredVideos(allVideos); // ✅ Initially show all videos

@@ -20,7 +20,7 @@ function CreateChannel({ onClose, onCreate, userId }) {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/channels",
+        "https://youtube-clone-lmy3.onrender.com/api/channels",
         requestData,
         { headers: { "Content-Type": "application/json" } }
       );

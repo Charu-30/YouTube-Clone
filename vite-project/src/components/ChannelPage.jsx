@@ -21,7 +21,7 @@ function ChannelPage() {
     const fetchChannelData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/channels/handle/${handle}`
+          `https://youtube-clone-lmy3.onrender.com/api/channels/handle/${handle}`
         );
         setChannel(response.data);
       } catch (error) {
@@ -32,7 +32,7 @@ function ChannelPage() {
     const fetchVideos = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/videos/channel/${handle}`
+          `https://youtube-clone-lmy3.onrender.com/api/videos/channel/${handle}`
         );
         setVideos(response.data);
       } catch (error) {
@@ -46,7 +46,7 @@ function ChannelPage() {
   // Function to delete a video
   const handleDelete = async (videoId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/videos/${videoId}`);
+      await axios.delete(`https://youtube-clone-lmy3.onrender.com/api/videos/${videoId}`);
       alert("Video deleted successfully!");
 
       // Update state to remove deleted video
@@ -70,7 +70,7 @@ function ChannelPage() {
   const handleUpdate = async () => {
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/videos/${selectedVideo._id}`,
+        `https://youtube-clone-lmy3.onrender.com/api/videos/${selectedVideo._id}`,
         {
           title: updatedTitle,
           thumbnailUrl: updatedThumbnail,

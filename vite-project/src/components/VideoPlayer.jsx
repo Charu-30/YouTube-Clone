@@ -32,7 +32,7 @@ function VideoPlayer() {
     const fetchVideo = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/videos/${videoId}`
+          `https://youtube-clone-lmy3.onrender.com/api/videos/${videoId}`
         );
         setVideo(res.data);
         setLikes(res.data.likes);
@@ -56,7 +56,7 @@ function VideoPlayer() {
 
     const fetchRecommendedVideos = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/videos");
+        const res = await axios.get("https://youtube-clone-lmy3.onrender.com/api/videos");
         setRecommendedVideos(res.data.filter((vid) => vid._id !== videoId));
       } catch (error) {
         console.error("Error in fetching recommended vidoes:", error);
@@ -66,7 +66,7 @@ function VideoPlayer() {
     const fetchComments = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/comments/${videoId}`
+          `https://youtube-clone-lmy3.onrender.com/api/comments/${videoId}`
         );
         // console.log("Comments", res.data);
         setComments(res.data);
@@ -90,7 +90,7 @@ function VideoPlayer() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        `http://localhost:5000/api/videos/${videoId}/like`,
+        `https://youtube-clone-lmy3.onrender.com/api/videos/${videoId}/like`,
         {},
         {
           headers: { Authorization: `JWT ${token}` },
@@ -111,7 +111,7 @@ function VideoPlayer() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        `http://localhost:5000/api/videos/${videoId}/dislike`,
+        `https://youtube-clone-lmy3.onrender.com/api/videos/${videoId}/dislike`,
         {},
         {
           headers: { Authorization: `JWT ${token}` },
@@ -133,7 +133,7 @@ function VideoPlayer() {
       try {
         const token = localStorage.getItem("token"); // Retrieve token
         const res = await axios.post(
-          `http://localhost:5000/api/comments/${videoId}`,
+          `https://youtube-clone-lmy3.onrender.com/api/comments/${videoId}`,
           {
             videoId,
             text: newComment,
@@ -159,7 +159,7 @@ function VideoPlayer() {
   // Function to delete comment
   const deleteComment = async (commentId) => {
     try {
-      await axios.delete(`http://localhost:5000/api/comments/${commentId}`);
+      await axios.delete(`https://youtube-clone-lmy3.onrender.com/api/comments/${commentId}`);
       setComments(comments.filter((comment) => comment._id !== commentId));
     } catch (error) {
       console.error("Error in deleting comment:", error);
@@ -177,7 +177,7 @@ function VideoPlayer() {
   const saveEdit = async (commentId) => {
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/comments/${commentId}`,
+        `https://youtube-clone-lmy3.onrender.com/api/comments/${commentId}`,
         { text: editText }
       );
       setComments(
@@ -281,7 +281,7 @@ function VideoPlayer() {
           </h3>
           <div className="flex items-center gap-3 mb-4">
             <img
-              src={avatar || <FaUserCircle />}
+              src={avatar || defaultchannel}
               alt="User avatar"
               className="w-10 h-10 rounded-full"
             />
