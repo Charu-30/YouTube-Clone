@@ -32,7 +32,7 @@ function VideoPlayer() {
     const fetchVideo = async () => {
       try {
         const res = await axios.get(
-          `https://youtube-clone-1-oo9t.onrender.com/api/videos/${videoId}`
+          `http://localhost:5000/api/videos/${videoId}`
         );
         setVideo(res.data);
         setLikes(res.data.likes);
@@ -56,7 +56,7 @@ function VideoPlayer() {
 
     const fetchRecommendedVideos = async () => {
       try {
-        const res = await axios.get("https://youtube-clone-1-oo9t.onrender.com/api/videos");
+        const res = await axios.get("http://localhost:5000/api/videos");
         setRecommendedVideos(res.data.filter((vid) => vid._id !== videoId));
       } catch (error) {
         console.error("Error in fetching recommended vidoes:", error);
@@ -66,9 +66,9 @@ function VideoPlayer() {
     const fetchComments = async () => {
       try {
         const res = await axios.get(
-          `https://youtube-clone-1-oo9t.onrender.com/api/comments/${videoId}`
+          `http://localhost:5000/api/comments/${videoId}`
         );
-        console.log("Comments", res.data);
+        // console.log("Comments", res.data);
         setComments(res.data);
       } catch (error) {
         console.error("Error fetching comments:", error);
@@ -80,7 +80,7 @@ function VideoPlayer() {
     fetchComments();
   }, [videoId]);
 
-  if (loading) return (<p className="text center mt-10">Loading...</p>);
+  if (loading) return <p className="text center mt-10">Loading...</p>;
   if (!video)
     return (
       <p className="text-center mt-10 text-xl font-semibold">Video not found</p>
@@ -90,10 +90,10 @@ function VideoPlayer() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        `https://youtube-clone-1-oo9t.onrender.com/api/videos/${videoId}/like`,
+        `http://localhost:5000/api/videos/${videoId}/like`,
         {},
         {
-          headers: {Authorization: `JWT ${token}`}
+          headers: { Authorization: `JWT ${token}` },
         }
       );
       // console.log("API response:", res.data);
@@ -111,12 +111,11 @@ function VideoPlayer() {
     try {
       const token = localStorage.getItem("token");
       const res = await axios.put(
-        `https://youtube-clone-1-oo9t.onrender.com/api/videos/${videoId}/dislike`,
+        `http://localhost:5000/api/videos/${videoId}/dislike`,
         {},
         {
-          headers:{Authorization: `JWT ${token}`}
+          headers: { Authorization: `JWT ${token}` },
         }
-        
       );
       // console.log("API response:", res.data);
       setLikes(res.data.likes);
@@ -134,13 +133,13 @@ function VideoPlayer() {
       try {
         const token = localStorage.getItem("token"); // Retrieve token
         const res = await axios.post(
-          `https://youtube-clone-1-oo9t.onrender.com/api/comments/${videoId}`,
+          `http://localhost:5000/api/comments/${videoId}`,
           {
             videoId,
             text: newComment,
           },
           {
-            headers:{Authorization: `JWT ${token}`}
+            headers: { Authorization: `JWT ${token}` },
           }
         );
         setComments([res.data.comment, ...comments]);
@@ -160,7 +159,7 @@ function VideoPlayer() {
   // Function to delete comment
   const deleteComment = async (commentId) => {
     try {
-      await axios.delete(`https://youtube-clone-1-oo9t.onrender.com/api/comments/${commentId}`);
+      await axios.delete(`http://localhost:5000/api/comments/${commentId}`);
       setComments(comments.filter((comment) => comment._id !== commentId));
     } catch (error) {
       console.error("Error in deleting comment:", error);
@@ -178,7 +177,7 @@ function VideoPlayer() {
   const saveEdit = async (commentId) => {
     try {
       const res = await axios.put(
-        `https://youtube-clone-1-oo9t.onrender.com/api/comments/${commentId}`,
+        `http://localhost:5000/api/comments/${commentId}`,
         { text: editText }
       );
       setComments(
@@ -213,11 +212,7 @@ function VideoPlayer() {
         <div className="flex flex-col flex-wrap sm:flex-row justify-between my-4 gap-3">
           <div className="flex flex-wrap gap-4 items-center">
             <img
-              src={
-                video.channelId?.avatar
-                  ? `https://youtube-clone-1-oo9t.onrender.com${video.channelId.avatar}`
-                  : defaultchannel
-              }
+              src={video.channelId?.avatar || defaultchannel}
               alt="Channel Avatar"
               className="w-10 h-10 rounded-full"
             />
@@ -321,9 +316,7 @@ function VideoPlayer() {
           {/* Display comments */}
           <div className="mt-4">
             {comments.map((comment) => {
-              const avatarUrl = comment.userId?.avatar
-                ? `https://youtube-clone-1-oo9t.onrender.com${comment.userId.avatar}`
-                : null;
+              const avatarUrl = comment.userId?.avatar;
               return (
                 <div
                   key={comment._id}

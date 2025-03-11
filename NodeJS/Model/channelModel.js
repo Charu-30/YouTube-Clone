@@ -5,7 +5,6 @@ const channelSchema = new mongoose.Schema({
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   handle: { type: String, required: true },
   description: { type: String },
-  avatar: { type: String, default: "" },
   channelBannerUrl: { type: String },
   subscribers: { type: Number, default: 0 },
   videos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Video" }],

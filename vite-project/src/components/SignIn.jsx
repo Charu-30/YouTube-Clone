@@ -7,76 +7,64 @@ function SignIn() {
     username: "",
     email: "",
     password: "",
+    avatar: "",
   });
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const [avatarPreview, setAvatarPreview] = useState(null);
   const navigate = useNavigate();
 
   // Check if user is already logged in
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    console.log("Stored User:", storedUser);
+    // console.log("Stored User:", storedUser);
     if (storedUser) {
-      const parsedUser = JSON.stringify(storedUser);
-      setUser(parsedUser.username);
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUser(parsedUser.username);
+      } catch (error) {
+        console.error("Error parsing stored user:", error);
+        localStorage.removeItem("user"); // Clear corrupted data
+      }
     }
   }, []);
 
   // Handle input change
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value.trim() });
   };
 
-  // Handle avatar upload
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, avatar: file });
-      setAvatarPreview(URL.createObjectURL(file)); // Generate preview URL
-    }
-  };
   // Handle Form SUbmission
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     const url = isLogin
-      ? "https://youtube-clone-1-oo9t.onrender.com/api/auth/login"
-      : "https://youtube-clone-1-oo9t.onrender.com/api/auth/register";
+      ? "http://localhost:5000/api/auth/login"
+      : "http://localhost:5000/api/auth/register";
 
     try {
-      let requestData;
-      let headers;
+      const requestData = isLogin
+        ? { email: formData.email, password: formData.password }
+        : {
+            username: formData.username,
+            email: formData.email,
+            password: formData.password,
+            avatar: formData.avatar || "",
+          };
 
-      if (isLogin) {
-        //Send JSON for login
-        requestData = {
-          email: formData.email,
-          password: formData.password,
-        };
-        headers = { "Content-Type": "application/json" };
-      } else {
-        //Send formData for register
-        requestData = new FormData();
-        requestData.append("username", formData.username);
-        requestData.append("email", formData.email);
-        requestData.append("password", formData.password);
-        if (formData.avatar) {
-          requestData.append("avatar", formData.avatar);
-        }
-        headers = { "Content-Type": "multipart/form-data" };
-      }
-      // console.log("Sending data:", requestData);
-      const { data } = await axios.post(url, requestData, { headers });
-      // console.log("Response:", data);
+      // console.log("📤 Sending Data:", requestData);
+
+      const { data } = await axios.post(url, requestData, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      // console.log("✅ Response Data:", data);
 
       if (isLogin) {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user)); //Store user object
         setUser(data.user.username);
-        setAvatarPreview(data.user.avatar);
         navigate("/");
       } else {
         alert("Registration successful! Please login.");
@@ -129,30 +117,17 @@ function SignIn() {
             required
           />
 
-          {/* Avatar Upload with Preview */}
           {!isLogin && (
-            <div className="flex flex-col items-center gap-3">
-              <label
-                htmlFor="avatar-upload"
-                className="text-gray-700 font-semibold"
-              >
-                Upload Avatar
-              </label>
-              {avatarPreview && (
-                <img
-                  src={avatarPreview}
-                  alt="Avatar Preview"
-                  className="w-20 h-20 rounded-full object-cover"
-                />
-              )}
+            <>
               <input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                className="border px-3 py-2 rounded w-full"
+                type="text"
+                name="avatar"
+                placeholder="User AvatarUrl"
+                value={formData.avatar}
+                onChange={handleChange}
+                className="border px-3 py-2 rounded"
               />
-            </div>
+            </>
           )}
 
           <button

@@ -1,54 +1,45 @@
 import { useState } from "react";
 import axios from "axios";
-import { FaUserCircle } from "react-icons/fa";
 
 function CreateChannel({ onClose, onCreate, userId }) {
   const [channelName, setChannelName] = useState("");
   const [channelHandle, setChannelHandle] = useState("");
   const [description, setDescription] = useState("");
   const [bannerUrl, setBannerUrl] = useState("");
-  const [avatar, setAvatar] = useState(null);
-  const [preview, setPreview] = useState(null);
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setAvatar(file);
-    setPreview(URL.createObjectURL(file)); //Generate preview URL
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("channelName", channelName);
-    formData.append("handle", channelHandle);
-    formData.append("description", description);
-    formData.append("channelBannerUrl", bannerUrl);
-    formData.append("owner", userId);
-    if (avatar) {
-      formData.append("avatar", avatar);
-    }
+
+    const requestData = {
+      channelName: channelName.trim(),
+      handle: channelHandle.trim(),
+      description: description.trim(),
+      channelBannerUrl: bannerUrl.trim(),
+      owner: userId,
+    };
+
     try {
-      // Send post request to create a channel
       const response = await axios.post(
-        "https://youtube-clone-1-oo9t.onrender.com/api/channels",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        "http://localhost:5000/api/channels",
+        requestData,
+        { headers: { "Content-Type": "application/json" } }
       );
 
-      //Notify parent comonent
       if (response.data.success && response.data.channel) {
         onCreate(response.data.channel);
         alert("Channel created successfully!");
-        //Close modal after suucessful creation
         onClose();
       } else {
-        throw new Error("Invalid response from server");
+        throw new Error(response.data.message || "Invalid server response");
       }
     } catch (error) {
-      console.error("Error creating channel:", error);
-      alert("Failed to create channel. Please try again");
+      console.error("Error creating channel:", error.response?.data || error);
+      alert(
+        error.response?.data?.message ||
+          "Failed to create channel. Please try again."
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -58,34 +49,6 @@ function CreateChannel({ onClose, onCreate, userId }) {
         <h2 className="text-2xl font-semibold mb-4 text-center">
           Create Your Channel
         </h2>
-
-        {/* Channel Avatar upload */}
-        <label
-          htmlFor="avatar-upload"
-          className="block cursor-pointer text-center"
-        >
-          {preview ? (
-            <img
-              src={preview}
-              alt="Channel Avatar"
-              className="w-20 h-20 mx-auto rounded-full object-cover border-2 border-gray-300"
-            />
-          ) : (
-            <div className="flex flex-col items-center">
-              <FaUserCircle className="text-blue-400 text-6xl mx-auto" />
-              <span className="text-sm text-blue-700 mt-2 hover:underline">
-                Select Picture
-              </span>
-            </div>
-          )}
-        </label>
-        <input
-          type="file"
-          id="avatar-upload"
-          className="hidden"
-          onChange={handleFileChange}
-          accept="image/*"
-        />
 
         <input
           type="text"

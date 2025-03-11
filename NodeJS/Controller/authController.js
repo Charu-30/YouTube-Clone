@@ -7,8 +7,8 @@ dotenv.config();
 // Register a new user
 export async function registerUser(req, res) {
   try {
-    const { username, email, password } = req.body;
-    const avatar = req.file ? `/uploads/${req.file.filename}` : null; //Store avatar  path
+    // console.log("Request body:", req.body);
+    const { username, email, password, avatar } = req.body;
     // Check if user already exists
     const userExists = await userModel.findOne({ email });
     if (userExists) {
@@ -22,12 +22,13 @@ export async function registerUser(req, res) {
       username,
       email,
       password: hashedPassword,
-      avatar,
+      avatar: avatar || "",
     });
 
     await newUser.save();
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
+    console.error("Registration error", error);
     res.status(500).json({ message: "Server Error: Unable to register user" });
   }
 }
@@ -61,9 +62,7 @@ export async function loginUser(req, res) {
         id: user._id,
         username: user.username,
         email: user.email,
-        avatar: user.avatar
-          ? `http://localhost:5000/${user.avatar.replace(/^\/+/, "")}`
-          : null,
+        avatar: user.avatar,
       },
     });
   } catch (error) {

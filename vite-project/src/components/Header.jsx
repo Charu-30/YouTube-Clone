@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { AiOutlineMenu, AiOutlineSearch } from "react-icons/ai";
-import { FaUserCircle } from "react-icons/fa";
 import { PiUserCircle } from "react-icons/pi";
 import logo from "../assets/logo.jpg";
 import { useNavigate } from "react-router-dom";
@@ -31,12 +30,16 @@ function Header({ handleSearch, isSidebarOpen, setIsSidebarOpen }) {
       setIsSignedIn(true);
       setUserName(parsedUser.username);
       setAvatar(parsedUser.avatar);
-      // console.log("User data", parsedUser);
 
       //Fetch the channel handle based on the user ID
       fetchUserChannel(parsedUser.id);
     }
   }, []);
+
+  const handleSearchClick = () => {
+    handleSearch(inputText);
+    setInputText("");
+  };
 
   //Fetch the user's channel handle
   const fetchUserChannel = async (userId) => {
@@ -46,7 +49,7 @@ function Header({ handleSearch, isSidebarOpen, setIsSidebarOpen }) {
     }
     try {
       const response = await axios.get(
-        `https://youtube-clone-1-oo9t.onrender.com/api/channels/user/${userId}`
+        `http://localhost:5000/api/channels/user/${userId}`
       );
       if (response.data && response.data.handle) {
         setChannelHandle(response.data.handle);
@@ -59,7 +62,7 @@ function Header({ handleSearch, isSidebarOpen, setIsSidebarOpen }) {
   };
 
   const handleCreateChannel = (channelData) => {
-    console.log("Channel Created:", channelData);
+    // console.log("Channel Created:", channelData);
     setShowModal(false);
     setChannelHandle(channelData.handle); //Update handle after channel creation
   };
@@ -103,7 +106,7 @@ function Header({ handleSearch, isSidebarOpen, setIsSidebarOpen }) {
           />
           <button
             className="px-1 md:px-2 py-1 sm:py-2 bg-gray-100 border border-gray-300 hover:bg-gray-200 border-l rounded-r-full"
-            onClick={() => handleSearch(inputText)}
+            onClick={handleSearchClick}
           >
             <AiOutlineSearch className="w-6 h-6 cursor-pointer" />
           </button>
@@ -146,17 +149,17 @@ function Header({ handleSearch, isSidebarOpen, setIsSidebarOpen }) {
           {/* Avatar dropdown */}
           {isSignedIn ? (
             <div className="relative">
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
+              <button onClick={() => setDropdownOpen(!dropdownOpen)}>
                 {avatar ? (
                   <img
                     src={avatar}
                     alt="User Avatar"
-                    className="w-7 h-7 sm:w-10 sm:h-10 rounded-full object-cover flex-shrink-0"
+                    className="w-7 h-7 sm:w-10 sm:h-10 rounded-full border border-gray-300 object-cover flex-shrink-0"
                   />
                 ) : (
-                  <FaUserCircle className="w-8 h-8 cursor-pointer text-gray-600 flex-shrink-0" />
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-full bg-gray-500 text-white font-semibold text-lg uppercase">
+                    {username.charAt(0)}
+                  </div>
                 )}
               </button>
 

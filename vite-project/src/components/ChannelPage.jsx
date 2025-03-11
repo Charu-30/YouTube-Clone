@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { FaUserCircle, FaEllipsisV } from "react-icons/fa";
+import { FaEllipsisV } from "react-icons/fa";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { timeAgo } from "../utils/timeAgo";
+import defaultchannel from "../assets/defaultchannel.jpg";
 
 function ChannelPage() {
   const { handle } = useParams(); // Get channel handle from URL
@@ -20,7 +21,7 @@ function ChannelPage() {
     const fetchChannelData = async () => {
       try {
         const response = await axios.get(
-          `https://youtube-clone-1-oo9t.onrender.com/api/channels/handle/${handle}`
+          `http://localhost:5000/api/channels/handle/${handle}`
         );
         setChannel(response.data);
       } catch (error) {
@@ -31,7 +32,7 @@ function ChannelPage() {
     const fetchVideos = async () => {
       try {
         const response = await axios.get(
-          `https://youtube-clone-1-oo9t.onrender.com/api/videos/channel/${handle}`
+          `http://localhost:5000/api/videos/channel/${handle}`
         );
         setVideos(response.data);
       } catch (error) {
@@ -45,7 +46,7 @@ function ChannelPage() {
   // Function to delete a video
   const handleDelete = async (videoId) => {
     try {
-      await axios.delete(`https://youtube-clone-1-oo9t.onrender.com/api/videos/${videoId}`);
+      await axios.delete(`http://localhost:5000/api/videos/${videoId}`);
       alert("Video deleted successfully!");
 
       // Update state to remove deleted video
@@ -69,7 +70,7 @@ function ChannelPage() {
   const handleUpdate = async () => {
     try {
       const response = await axios.put(
-        `https://youtube-clone-1-oo9t.onrender.com/api/videos/${selectedVideo._id}`,
+        `http://localhost:5000/api/videos/${selectedVideo._id}`,
         {
           title: updatedTitle,
           thumbnailUrl: updatedThumbnail,
@@ -105,31 +106,21 @@ function ChannelPage() {
     <div className=" mt-20 px-4 md:px-10">
       {/* Banner */}
       <div className="w-full h-40 sm:h-56 md:h-64 lg:h-80 bg-gray-200 overflow-hidden">
-        {channel.channelBannerUrl ? (
-          <img
-            src={channel.channelBannerUrl}
-            alt="Banner"
-            className="w-full h-full object-cover rounded-xl"
-          />
-        ) : (
-          <div className="h-full flex items-center justify-center text-gray-500 text-lg sm:text-xl">
-            No Banner
-          </div>
-        )}
+        <img
+          src={channel.channelBannerUrl || defaultchannel}
+          alt="Banner"
+          className="w-full h-full object-cover rounded-xl"
+        />
       </div>
 
       {/* Channel Info */}
       <div className="py-6 flex flex-wrap flex-row gap-6 md:justify-start justify-center">
         <div className="w-20 h-20 sm:w-28 sm:h-28 md:h-32 md:w-32">
-          {channel.avatar ? (
-            <img
-              src={`https://youtube-clone-1-oo9t.onrender.com${channel.avatar}`}
-              alt="Channel Logo"
-              className="w-full h-full rounded-full"
-            />
-          ) : (
-            <FaUserCircle className="w-full h-full text-gray-400" />
-          )}
+          <img
+            src={channel.channelBannerUrl || defaultchannel}
+            alt="Channel Logo"
+            className="w-full h-full rounded-full"
+          />
         </div>
 
         <div className="md:text-left text-center">

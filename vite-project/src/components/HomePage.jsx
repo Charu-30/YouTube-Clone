@@ -6,42 +6,45 @@ import defaultchannel from "../assets/defaultchannel.jpg";
 import { timeAgo } from "../utils/timeAgo";
 
 function HomePage() {
-  const { searchText, isSidebarOpen } = useOutletContext(); //Get search text from App.jsx
+  const { searchText,setSearchText, isSidebarOpen } = useOutletContext(); //Get search text from App.jsx
   const [videos, setVideos] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
+  const [filteredVideos, setFilteredVideos] = useState([]);
 
   useEffect(() => {
     const fetchVideos = async () => {
       try {
-        const response = await axios.get("https://youtube-clone-1-oo9t.onrender.com/api/videos");
-        // console.log("Fetched Videos", response.data);
-        setVideos(Array.isArray(response.data) ? response.data : []);
+        const response = await axios.get("http://localhost:5000/api/videos");
+        const allVideos = Array.isArray(response.data) ? response.data : [];
+        setVideos(allVideos); // ✅ Store fetched videos
+        setFilteredVideos(allVideos); // ✅ Initially show all videos
       } catch (error) {
-        console.error("Error in fetcging videos:", error);
+        console.error("Error fetching videos:", error);
       }
     };
     fetchVideos();
-  }, []);
+  }, []); // ✅ Fetch only once on mount
 
-  //Get unique categories from fetched videos
-  const categories = [
-    "All",
-    ...(Array.isArray(videos)
-      ? [...new Set(videos.map((video) => video.category))]
-      : []),
-  ];
+  useEffect(() => {
+    let updatedVideos = [...videos];
 
-  // 🔹 Apply Category Filtering first
-  let categoryFilteredVideos =
-    selectedCategory === "All"
-      ? videos
-      : videos.filter((video) => video.category === selectedCategory);
-
-  let finalFilteredVideos = searchText
-    ? categoryFilteredVideos.filter((video) =>
+    // 🔹 Apply search filter
+    if (searchText.trim() !== "") {
+      updatedVideos = updatedVideos.filter((video) =>
         video.title.toLowerCase().includes(searchText.toLowerCase())
-      )
-    : categoryFilteredVideos;
+      );
+    }
+
+    // 🔹 Apply category filter
+    if (selectedCategory !== "All") {
+      updatedVideos = updatedVideos.filter(
+        (video) => video.category === selectedCategory
+      );
+    }
+    setFilteredVideos(updatedVideos);
+  }, [selectedCategory, searchText, videos]); // ✅ Runs when category, searchText, or videos change
+
+  const categories = ["All", ...new Set(videos.map((video) => video.category))];
 
   return (
     <div
@@ -59,7 +62,10 @@ function HomePage() {
                 ? "bg-gray-900 text-white"
                 : "bg-gray-300"
             }`}
-            onClick={() => setSelectedCategory(category)}
+            onClick={() => {
+              setSelectedCategory(category)
+              setSearchText("");
+            }}
           >
             {category}
           </button>
@@ -67,7 +73,7 @@ function HomePage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-        {finalFilteredVideos.map((video) => (
+        {filteredVideos.map((video) => (
           <Link key={video._id} to={`/video/${video._id}`}>
             <div className="p-1 ">
               {/* Thumbnail */}
@@ -82,11 +88,7 @@ function HomePage() {
                 {/* Channel Avatar */}
 
                 <img
-                  src={
-                    video.channelId?.avatar
-                      ? `https://youtube-clone-1-oo9t.onrender.com${video.channelId.avatar}`
-                      : defaultchannel
-                  }
+                  src={video.channelId?.channelBannerUrl || defaultchannel}
                   alt="Channel Avatar"
                   className="w-10 h-10 rounded-full"
                 />
@@ -111,7 +113,7 @@ function HomePage() {
       </div>
 
       {/* No Videos Message */}
-      {finalFilteredVideos.length === 0 && (
+      {filteredVideos.length === 0 && (
         <p className="text-center text-gray-600 mt-4">No videos available.</p>
       )}
     </div>

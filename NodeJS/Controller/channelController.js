@@ -17,7 +17,7 @@ export async function getChannels(req, res) {
 export const getChannelByUserId = async (req, res) => {
   try {
     const { userId } = req.params;
-    
+
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid user ID format" });
     }
@@ -55,8 +55,8 @@ export async function createChannel(req, res) {
   try {
     const { channelName, handle, description, owner, channelBannerUrl } =
       req.body;
-    //Get the avatar file path if uplaoded
-    const avatar = req.file ? `/uploads/${req.file.filename}` : "";
+    // //Get the avatar file path if uplaoded
+    // const avatar = req.file ? `/uploads/${req.file.filename}` : "";
     //Check if the channel handle is unique
     const existingChannel = await channelModel.findOne({ handle });
     if (existingChannel) {
@@ -76,7 +76,6 @@ export async function createChannel(req, res) {
       description,
       owner,
       channelBannerUrl,
-      avatar,
     });
     await newChannel.save();
 
@@ -84,13 +83,11 @@ export async function createChannel(req, res) {
     await userModel.findByIdAndUpdate(owner, {
       $push: { channels: newChannel._id },
     });
-    return res
-      .status(201)
-      .json({
-        success: true,
-        message: "Channel created successfully",
-        channel: newChannel,
-      });
+    return res.status(201).json({
+      success: true,
+      message: "Channel created successfully",
+      channel: newChannel,
+    });
   } catch (error) {
     console.error("Server error:", error);
     res.status(500).json({ error: "Server error: Failed to create channel" });

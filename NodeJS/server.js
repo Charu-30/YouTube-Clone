@@ -31,8 +31,6 @@ db.on("error", ()=>{
     console.log("Connection is not successful");
 })
 
-//Serve static files(avatars)
-app.use("/uploads", express.static("uploads"));
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/videos', videoRoutes);

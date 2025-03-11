@@ -19,7 +19,7 @@ function UploadVideoModal({ onClose }) {
   const fetchChannelId = async (userId) => {
     try {
       const response = await axios.get(
-        `https://youtube-clone-1-oo9t.onrender.com/api/channels/user/${userId}`
+        `http://localhost:5000/api/channels/user/${userId}`
       );
       if (response.data?._id) {
         setChannelId(response.data._id);
@@ -45,7 +45,7 @@ function UploadVideoModal({ onClose }) {
 
     try {
       const response = await axios.post(
-        "https://youtube-clone-1-oo9t.onrender.com/api/videos",
+        "http://localhost:5000/api/videos",
         {
           title,
           description,

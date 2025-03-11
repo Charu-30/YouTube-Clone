@@ -39,7 +39,7 @@ function App() {
           if (isMobile) setIsSidebarOpen(false); 
         }}
       >
-          <Outlet context={{searchText}}/> 
+          <Outlet context={{searchText, setSearchText}}/> 
       </div>
       
     </>
